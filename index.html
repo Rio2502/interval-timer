@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- 文字コードをUTF-8に設定する -->
+  <meta charset="UTF-8">
+
+  <!-- スマートフォンでも画面幅に合わせて表示する -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ブラウザのタブに表示するタイトル -->
+  <title>ワークアウトタイマー</title>
+
+  <!-- デザイン用のCSSファイルを読み込む -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- JavaScriptをHTMLの解析後に実行する -->
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <!-- アプリ全体を囲む領域 -->
+  <main class="app">
+
+    <!-- =====================================
+         1. ヘッダー
+         ===================================== -->
+    <header class="app-header">
+      <h1 data-i18n="appTitle">ワークアウトタイマー</h1>
+
+      <!-- ダークテーマとライトテーマを切り替える -->
+      <button
+        type="button"
+        id="theme-toggle"
+        class="secondary-button"
+        data-i18n="themeToggle"
+      >
+        テーマ切替
+      </button>
+    </header>
+
+
+    <!-- =====================================
+         2. タイマー本体
+         ===================================== -->
+    <section class="timer-section" aria-label="Workout timer">
+
+      <!-- 現在の状態：開始前・ワーク・休憩など -->
+      <p
+        id="timer-status"
+        class="timer-status"
+        aria-live="polite"
+      >
+        開始前
+      </p>
+
+      <!-- 残り時間を大きく表示する -->
+      <div
+        id="timer-display"
+        class="timer-display"
+        role="timer"
+        aria-label="残り時間"
+      >
+        01:00
+      </div>
+
+      <!-- 現在のラウンドと総ラウンド数 -->
+      <p id="round-display" class="round-display">
+        ラウンド 1 / 10
+      </p>
+
+      <!-- タイマー操作ボタン -->
+      <div class="timer-controls">
+        <button
+          type="button"
+          id="start-btn"
+          class="primary-button"
+          data-i18n="start"
+        >
+          開始 / 再開
+        </button>
+
+        <button
+          type="button"
+          id="pause-btn"
+          class="secondary-button"
+          data-i18n="pause"
+        >
+          一時停止
+        </button>
+
+        <button
+          type="button"
+          id="reset-btn"
+          class="secondary-button"
+          data-i18n="reset"
+        >
+          リセット
+        </button>
+      </div>
+    </section>
+
+
+    <!-- =====================================
+         3. トレーニング設定
+         ===================================== -->
+    <section class="settings-section">
+      <h2 data-i18n="settings">トレーニング設定</h2>
+
+      <div class="settings-grid">
+
+        <!-- ワーク時間：1～3600秒 -->
+        <div class="form-group">
+          <label for="work-duration" data-i18n="workDuration">
+            ワーク時間（秒）
+          </label>
+
+          <input
+            type="number"
+            id="work-duration"
+            name="work-duration"
+            min="1"
+            max="3600"
+            step="1"
+            value="60"
+            required
+          >
+        </div>
+
+        <!-- 休憩時間：0～3600秒 -->
+        <div class="form-group">
+          <label for="rest-duration" data-i18n="restDuration">
+            休憩時間（秒）
+          </label>
+
+          <input
+            type="number"
+            id="rest-duration"
+            name="rest-duration"
+            min="0"
+            max="3600"
+            step="1"
+            value="15"
+            required
+          >
+        </div>
+
+        <!-- ラウンド数：1～100 -->
+        <div class="form-group">
+          <label for="round-count" data-i18n="roundCount">
+            ラウンド数
+          </label>
+
+          <input
+            type="number"
+            id="round-count"
+            name="round-count"
+            min="1"
+            max="100"
+            step="1"
+            value="10"
+            required
+          >
+        </div>
+      </div>
+
+      <!-- 入力した設定を保存する -->
+      <button
+        type="button"
+        id="save-settings-btn"
+        class="primary-button"
+        data-i18n="saveSettings"
+      >
+        設定を保存
+      </button>
+    </section>
+
+
+    <!-- =====================================
+         4. 環境設定
+         ===================================== -->
+    <section class="preferences-section">
+      <h2 data-i18n="preferences">環境設定</h2>
+
+      <div class="preferences-grid">
+
+        <!-- 表示言語 -->
+        <div class="form-group">
+          <label for="language-select" data-i18n="language">
+            言語
+          </label>
+
+          <select id="language-select" name="language">
+            <option value="ja">日本語</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+
+        <!-- 音量：0～100 -->
+        <div class="form-group">
+          <label for="volume-control" data-i18n="volume">
+            音量
+          </label>
+
+          <input
+            type="range"
+            id="volume-control"
+            name="volume"
+            min="0"
+            max="100"
+            step="1"
+            value="60"
+          >
+        </div>
+
+        <!-- 音の有効・無効 -->
+        <div class="form-group checkbox-group">
+          <label for="sound-enabled">
+            <input
+              type="checkbox"
+              id="sound-enabled"
+              name="sound-enabled"
+              checked
+            >
+            <span data-i18n="enableSounds">
+              サウンドを有効にする
+            </span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =====================================
+         5. トレーニング履歴
+         ===================================== -->
+    <section class="history-section">
+      <h2 data-i18n="history">トレーニング履歴</h2>
+
+      <!-- JavaScriptが完了済みの記録をここに追加する -->
+      <ul id="history-list" aria-live="polite">
+        <li>完了したトレーニングはありません。</li>
+      </ul>
+    </section>
+
+  </main>
+</body>
+</html>
+
+
+
+
+    
